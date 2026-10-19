@@ -1,4 +1,4 @@
-# GetStego – Intelligent Web-Based Multimedia Steganography System
+# StegoCraft – Intelligent Web-Based Multimedia Steganography System
 
 > A Django-based web application for securely hiding secret messages inside **images**, **audio**, and **video** files using **LSB steganography** + **AES-256 encryption**.
 
@@ -29,8 +29,8 @@
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/GetStego.git
-cd GetStego
+git clone https://github.com/YOUR_USERNAME/StegoCraft.git
+cd StegoCraft
 
 # 2. Install dependencies
 pip install -r requirements.txt
@@ -80,13 +80,13 @@ Original Message ✅
 ## 📁 Project Structure
 
 ```
-GetStego/
+StegoCraft/
 ├── algorithms/
 │   ├── crypto_utils.py     # AES-256 encrypt/decrypt
 │   ├── encode.py           # Audio LSB steganography
 │   ├── encode_img.py       # Image LSB steganography
 │   └── encode_video.py     # Video LSB steganography
-├── GetStego/
+├── StegoCraft/
 │   ├── settings.py         # Django settings (uses .env)
 │   ├── urls.py             # URL routing
 │   └── views.py            # Request handlers

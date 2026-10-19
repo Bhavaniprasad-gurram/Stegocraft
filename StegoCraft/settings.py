@@ -29,7 +29,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'GetStego.urls'
+ROOT_URLCONF = 'StegoCraft.urls'
 
 TEMPLATES = [
     {
@@ -47,7 +47,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'GetStego.wsgi.application'
+WSGI_APPLICATION = 'StegoCraft.wsgi.application'
 
 DATABASES = {
     'default': {

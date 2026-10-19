@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from GetStego import views
+from StegoCraft import views
 
 urlpatterns = [
     path('', views.my_view, name='index'),
