@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetStego – Intelligent Steganography</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root[data-theme="dark"] {
+            --bg: #0a0f1e;
+            --bg2: #111827;
+            --bg3: #1e293b;
+            --card: #1a2235;
+            --border: #2d3748;
+            --text: #e2e8f0;
+            --text2: #94a3b8;
+            --accent: #6366f1;
+            --accent2: #8b5cf6;
+            --green: #10b981;
+            --orange: #f97316;
+            --red: #ef4444;
+            --glow: rgba(99,102,241,0.3);
+        }
+        :root[data-theme="light"] {
+            --bg: #f1f5f9;
+            --bg2: #ffffff;
+            --bg3: #e2e8f0;
+            --card: #ffffff;
+            --border: #cbd5e1;
+            --text: #1e293b;
+            --text2: #64748b;
+            --accent: #6366f1;
+            --accent2: #8b5cf6;
+            --green: #059669;
+            --orange: #ea580c;
+            --red: #dc2626;
+            --glow: rgba(99,102,241,0.15);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 5%; height: 64px;
+            background: rgba(10,15,30,0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+        [data-theme="light"] nav { background: rgba(241,245,249,0.9); }
+        .nav-logo { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-logo span { color: var(--accent); }
+        .nav-links { display: flex; align-items: center; gap: 8px; list-style: none; }
+        .nav-links a { color: var(--text2); text-decoration: none; font-size: 0.9rem; font-weight: 500; padding: 6px 14px; border-radius: 8px; transition: all 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); background: var(--glow); }
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+        .theme-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; }
+        .theme-btn:hover { color: var(--accent); border-color: var(--accent); }
+        .hamburger { display: none; background: none; border: none; color: var(--text); font-size: 1.3rem; cursor: pointer; }
+
+        /* MAIN */
+        main { padding-top: 80px; min-height: 100vh; }
+
+        /* SIDEBAR LAYOUT */
+        .app-layout { display: flex; min-height: calc(100vh - 64px); }
+        .sidebar {
+            width: 220px; min-height: 100%; background: var(--bg2);
+            border-right: 1px solid var(--border); padding: 24px 16px;
+            position: fixed; top: 64px; left: 0; bottom: 0; overflow-y: auto;
+        }
+        .sidebar-label { font-size: 0.7rem; font-weight: 600; color: var(--text2); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; padding: 0 8px; }
+        .sidebar-group { margin-bottom: 24px; }
+        .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; color: var(--text2); text-decoration: none; font-size: 0.88rem; font-weight: 500; margin-bottom: 2px; border: 1px solid transparent; }
+        .sidebar-item:hover { background: var(--bg3); color: var(--text); }
+        .sidebar-item.active { background: var(--glow); color: var(--accent); border-color: var(--accent); }
+        .sidebar-item i { width: 16px; text-align: center; font-size: 0.85rem; }
+        .content-area { margin-left: 220px; flex: 1; padding: 32px 5%; }
+
+        /* CARDS */
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 20px; }
+        .card-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+        .card-subtitle { color: var(--text2); font-size: 0.9rem; margin-bottom: 24px; }
+
+        /* BADGE */
+        .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+        .badge-green { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+        .badge-purple { background: rgba(99,102,241,0.15); color: var(--accent); border: 1px solid rgba(99,102,241,0.3); }
+        .badge-orange { background: rgba(249,115,22,0.15); color: var(--orange); border: 1px solid rgba(249,115,22,0.3); }
+
+        /* FORM ELEMENTS */
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-control {
+            width: 100%; padding: 12px 16px; background: var(--bg3);
+            border: 1px solid var(--border); border-radius: 10px;
+            color: var(--text); font-size: 0.95rem; font-family: 'Inter', sans-serif;
+            outline: none;
+        }
+        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+        textarea.form-control { resize: vertical; min-height: 100px; }
+
+        /* DROP ZONE */
+        .drop-zone {
+            border: 2px dashed var(--border); border-radius: 12px;
+            padding: 36px; text-align: center; cursor: pointer;
+            background: var(--bg3); transition: all 0.2s; position: relative;
+        }
+        .drop-zone:hover, .drop-zone.dragover { border-color: var(--accent); background: var(--glow); }
+        .drop-zone i { font-size: 2rem; color: var(--accent); margin-bottom: 10px; display: block; }
+        .drop-zone p { color: var(--text2); font-size: 0.9rem; }
+        .drop-zone p span { color: var(--accent); font-weight: 600; cursor: pointer; }
+        .drop-zone .file-name { color: var(--green); font-weight: 600; font-size: 0.95rem; margin-top: 8px; }
+        .drop-zone input[type="file"] { display: none; }
+        /* Image preview inside drop zone */
+        .drop-zone .preview-img { max-height: 140px; border-radius: 8px; margin-top: 10px; display: none; }
+
+        /* FILE VALIDATION */
+        .file-info { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 0.82rem; color: var(--text2); }
+        .file-info.error { color: var(--red); }
+        .file-info.ok { color: var(--green); }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px; border-radius: 10px; font-size: 0.95rem;
+            font-weight: 600; cursor: pointer; border: none; text-decoration: none;
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 20px var(--glow); }
+        .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+        .btn-outline:hover { background: var(--glow); }
+        .btn-green { background: var(--green); color: #fff; }
+        .btn-green:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* ALERTS */
+        .alert { padding: 14px 18px; border-radius: 10px; margin-bottom: 18px; display: flex; align-items: flex-start; gap: 12px; font-size: 0.9rem; }
+        .alert-success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--green); }
+        .alert-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+        .alert-info { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.3); color: var(--accent); }
+
+        /* RESULT BOX */
+        .result-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 16px; position: relative; }
+        .result-box pre { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; white-space: pre-wrap; word-break: break-all; color: var(--green); }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background: var(--bg); border: 1px solid var(--border); color: var(--text2); padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.78rem; }
+        .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+        /* LOADING OVERLAY */
+        .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 999; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+        .loading-overlay.active { display: flex; }
+        .spinner { width: 48px; height: 48px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { color: #fff; font-size: 1rem; font-weight: 500; }
+
+        /* FOOTER */
+        footer { margin-left: 220px; background: var(--bg2); border-top: 1px solid var(--border); padding: 20px 5%; text-align: center; color: var(--text2); font-size: 0.82rem; }
+        footer a { color: var(--accent); text-decoration: none; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); z-index: 200; width: 240px; transition: transform 0.3s; }
+            .sidebar.open { transform: translateX(0); }
+            .content-area { margin-left: 0; padding: 20px; }
+            footer { margin-left: 0; }
+            .hamburger { display: block; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p class="loading-text">Processing... Please wait</p>
+</div>
+
+<!-- NAV -->
+<nav>
+    <a href="/" class="nav-logo"><i class="fas fa-shield-halved" style="color:var(--accent)"></i> Get<span>Stego</span></a>
+    <ul class="nav-links">
+        <li><a href="/encode_image_remake" {% if request.path == '/encode_image_remake/' %}class="active"{% endif %}>Image</a></li>
+        <li><a href="/encode_remake" {% if request.path == '/encode_remake/' %}class="active"{% endif %}>Audio</a></li>
+        <li><a href="/encode_video_remake" {% if request.path == '/encode_video_remake/' %}class="active"{% endif %}>Video</a></li>
+    </ul>
+    <div class="nav-right">
+        <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+        <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+</nav>
+
+<main>
+<div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-group">
+            <div class="sidebar-label">Image</div>
+            <a href="/encode_image_remake" class="sidebar-item {% if 'encode_image' in request.path %}active{% endif %}">
+                <i class="fas fa-lock"></i> Encode
+            </a>
+            <a href="/decode_image_remake" class="sidebar-item {% if 'decode_image' in request.path %}active{% endif %}">
+                <i class="fas fa-unlock"></i> Decode
+            </a>
+        </div>
+        <div class="sidebar-group">
+            <div class="sidebar-label">Audio</div>
+            <a href="/encode_remake" class="sidebar-item {% if request.path == '/encode_remake/' %}active{% endif %}">
+                <i class="fas fa-lock"></i> Encode
+            </a>
+            <a href="/decode_remake" class="sidebar-item {% if request.path == '/decode_remake/' %}active{% endif %}">
+                <i class="fas fa-unlock"></i> Decode
+            </a>
+        </div>
+        <div class="sidebar-group">
+            <div class="sidebar-label">Video</div>
+            <a href="/encode_video_remake" class="sidebar-item {% if 'encode_video' in request.path %}active{% endif %}">
+                <i class="fas fa-lock"></i> Encode
+            </a>
+            <a href="/decode_video_remake" class="sidebar-item {% if 'decode_video' in request.path %}active{% endif %}">
+                <i class="fas fa-unlock"></i> Decode
+            </a>
+        </div>
+        <div class="sidebar-group">
+            <div class="sidebar-label">Security</div>
+            <div class="sidebar-item"><i class="fas fa-key" style="color:var(--green)"></i> AES Encrypted</div>
+            <div class="sidebar-item"><i class="fas fa-eye-slash" style="color:var(--accent)"></i> LSB Hidden</div>
+        </div>
+    </aside>
+
+    <!-- PAGE CONTENT -->
+    <div class="content-area">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+</main>
+
+<footer>
+    <p>GetStego &copy; 2024 &mdash; Intelligent Web-Based Multimedia Steganography &mdash; Built with <i class="fas fa-heart" style="color:var(--red)"></i> using Django &amp; AES-256</p>
+</footer>
+
+<script>
+    // Theme toggle
+    function toggleTheme() {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        document.getElementById('themeIcon').className = next === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+    // Restore saved theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('themeIcon').className = savedTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+
+    // Sidebar mobile toggle
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    // Loading overlay on form submit
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('form').forEach(function (form) {
+            form.addEventListener('submit', function () {
+                document.getElementById('loadingOverlay').classList.add('active');
+            });
+        });
+    });
+
+    // Universal drag-and-drop + preview
+    function initDropZone(dropId, inputId, allowedTypes, previewImgId) {
+        const drop = document.getElementById(dropId);
+        const input = document.getElementById(inputId);
+        if (!drop || !input) return;
+
+        drop.addEventListener('click', () => input.click());
+        drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('dragover'); });
+        drop.addEventListener('dragleave', () => drop.classList.remove('dragover'));
+        drop.addEventListener('drop', e => {
+            e.preventDefault(); drop.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                setFile(e.dataTransfer.files[0], input, drop, allowedTypes, previewImgId);
+            }
+        });
+        input.addEventListener('change', e => {
+            if (e.target.files.length) setFile(e.target.files[0], input, drop, allowedTypes, previewImgId);
+        });
+    }
+
+    function setFile(file, input, drop, allowedTypes, previewImgId) {
+        const ext = file.name.split('.').pop().toLowerCase();
+        const infoEl = drop.querySelector('.file-info');
+        const nameEl = drop.querySelector('.file-name');
+        const previewImg = previewImgId ? document.getElementById(previewImgId) : null;
+
+        if (allowedTypes && !allowedTypes.includes(ext)) {
+            if (infoEl) { infoEl.className = 'file-info error'; infoEl.innerHTML = '<i class="fas fa-times-circle"></i> Invalid file type. Allowed: ' + allowedTypes.join(', '); }
+            return;
+        }
+        // Transfer to input
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+
+        if (nameEl) nameEl.textContent = file.name;
+        if (infoEl) { infoEl.className = 'file-info ok'; infoEl.innerHTML = '<i class="fas fa-check-circle"></i> ' + (file.size / 1024).toFixed(1) + ' KB'; }
+
+        // Image preview
+        if (previewImg && ['jpg','jpeg','png','gif','bmp'].includes(ext)) {
+            const reader = new FileReader();
+            reader.onload = e => { previewImg.src = e.target.result; previewImg.style.display = 'block'; };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Copy to clipboard
+    function copyToClipboard(id) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.innerText).then(() => {
+            const btn = el.parentElement.querySelector('.copy-btn');
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => btn.innerHTML = '<i class="fas fa-copy"></i> Copy', 2000);
+        });
+    }
+</script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

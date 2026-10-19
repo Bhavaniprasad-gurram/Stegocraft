@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="text-align:center;padding:60px 28px;">
+    <div style="width:72px;height:72px;background:rgba(239,68,68,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;border:1px solid rgba(239,68,68,0.3);">
+        <i class="fas fa-triangle-exclamation" style="font-size:1.8rem;color:var(--red)"></i>
+    </div>
+    <h2 style="margin-bottom:10px;color:var(--red)">Something went wrong</h2>
+    <p style="color:var(--text2);margin-bottom:30px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto;">
+        An error occurred while processing your file. This may be due to an <strong>invalid file format</strong>, a <strong>wrong key</strong>, or the file being <strong>too small</strong> to hold the message.
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="javascript:history.back()" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Go Back</a>
+        <a href="/" class="btn btn-primary"><i class="fas fa-house"></i> Home</a>
+    </div>
+
+    <div class="card" style="margin-top:30px;text-align:left;background:var(--bg3);border-style:dashed;">
+        <p style="font-size:0.85rem;color:var(--text2);line-height:1.7;">
+            <strong style="color:var(--text)">Common causes:</strong><br>
+            • Wrong or mismatched secret key<br>
+            • Unsupported file format (use WAV for audio, AVI for video, PNG/JPG for images)<br>
+            • Message too long for the selected media file<br>
+            • File was corrupted or modified after encoding
+        </p>
+    </div>
+</div>
+{% endblock %}

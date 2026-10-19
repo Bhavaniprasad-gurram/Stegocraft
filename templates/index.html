@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetStego – Intelligent Steganography</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root[data-theme="dark"] {
+            --bg: #0a0f1e; --bg2: #111827; --bg3: #1e293b; --card: #1a2235;
+            --border: #2d3748; --text: #e2e8f0; --text2: #94a3b8;
+            --accent: #6366f1; --accent2: #8b5cf6; --green: #10b981;
+            --orange: #f97316; --red: #ef4444; --glow: rgba(99,102,241,0.25);
+        }
+        :root[data-theme="light"] {
+            --bg: #f1f5f9; --bg2: #ffffff; --bg3: #e2e8f0; --card: #ffffff;
+            --border: #cbd5e1; --text: #1e293b; --text2: #64748b;
+            --accent: #6366f1; --accent2: #8b5cf6; --green: #059669;
+            --orange: #ea580c; --red: #dc2626; --glow: rgba(99,102,241,0.12);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+        /* PARTICLES BG */
+        #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 6%; height: 68px;
+            background: rgba(10,15,30,0.9); backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+        [data-theme="light"] nav { background: rgba(241,245,249,0.95); }
+        .nav-logo { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .nav-logo .logo-icon { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+        .nav-links a { color: var(--text2); text-decoration: none; font-size: 0.88rem; font-weight: 500; padding: 7px 16px; border-radius: 8px; transition: all 0.2s; }
+        .nav-links a:hover { color: var(--text); background: var(--bg3); }
+        .nav-right { display: flex; align-items: center; gap: 10px; }
+        .theme-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .theme-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+        /* HERO */
+        .hero {
+            position: relative; z-index: 1;
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 100px 6% 60px; text-align: center;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.3);
+            color: var(--accent); padding: 6px 16px; border-radius: 20px;
+            font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px;
+            margin-bottom: 28px; text-transform: uppercase;
+        }
+        .hero h1 {
+            font-size: clamp(2.8rem, 8vw, 6rem); font-weight: 800; line-height: 1.05;
+            margin-bottom: 20px; letter-spacing: -2px;
+        }
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--green));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p { font-size: 1.1rem; color: var(--text2); max-width: 540px; line-height: 1.7; margin-bottom: 40px; }
+
+        /* FEATURE CARDS */
+        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; max-width: 900px; margin-bottom: 50px; }
+        .feature-card {
+            background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+            padding: 24px; text-align: left; cursor: pointer; text-decoration: none;
+            transition: all 0.25s; position: relative; overflow: hidden;
+        }
+        .feature-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            opacity: 0; transition: opacity 0.25s;
+        }
+        .feature-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 12px 40px var(--glow); }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 14px; }
+        .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+        .feature-card p { font-size: 0.82rem; color: var(--text2); line-height: 1.5; }
+        .feature-card .arrow { position: absolute; bottom: 20px; right: 20px; color: var(--text2); font-size: 0.85rem; transition: all 0.2s; }
+        .feature-card:hover .arrow { color: var(--accent); transform: translateX(4px); }
+
+        /* STATS BAR */
+        .stats { display: flex; gap: 40px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat .num { font-size: 1.6rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; background: linear-gradient(135deg, var(--accent), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat .lbl { font-size: 0.75rem; color: var(--text2); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* SCROLL CTA */
+        .scroll-cta { margin-top: 48px; color: var(--text2); font-size: 0.82rem; display: flex; flex-direction: column; align-items: center; gap: 8px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+
+        @media (max-width: 768px) {
+            .features { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .stats { gap: 24px; }
+        }
+    </style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+
+<nav>
+    <a href="/" class="nav-logo"><i class="fas fa-shield-halved logo-icon"></i> GetStego</a>
+    <ul class="nav-links">
+        <li><a href="/encode_image_remake">Image</a></li>
+        <li><a href="/encode_remake">Audio</a></li>
+        <li><a href="/encode_video_remake">Video</a></li>
+    </ul>
+    <div class="nav-right">
+        <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+    </div>
+</nav>
+
+<div class="hero">
+    <div class="hero-badge"><i class="fas fa-shield-halved"></i> AES-256 + LSB Steganography</div>
+    <h1>Hide Secrets<br>In <span class="gradient-text">Plain Sight</span></h1>
+    <p>GetStego uses intelligent Least Significant Bit steganography combined with AES-256 encryption to securely embed secret messages inside images, audio, and video files.</p>
+
+    <div class="features">
+        <a href="/encode_image_remake" class="feature-card">
+            <div class="feature-icon" style="background:rgba(99,102,241,0.15);color:var(--accent)"><i class="fas fa-image"></i></div>
+            <h3>Image Steganography</h3>
+            <p>Hide messages inside PNG &amp; JPEG images with invisible pixel manipulation.</p>
+            <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+        </a>
+        <a href="/encode_remake" class="feature-card">
+            <div class="feature-icon" style="background:rgba(16,185,129,0.15);color:var(--green)"><i class="fas fa-music"></i></div>
+            <h3>Audio Steganography</h3>
+            <p>Embed encrypted data into WAV audio files without audible distortion.</p>
+            <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+        </a>
+        <a href="/encode_video_remake" class="feature-card">
+            <div class="feature-icon" style="background:rgba(249,115,22,0.15);color:var(--orange)"><i class="fas fa-video"></i></div>
+            <h3>Video Steganography</h3>
+            <p>Conceal secret messages inside AVI video files frame by frame.</p>
+            <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+        </a>
+    </div>
+
+    <div class="stats">
+        <div class="stat"><div class="num">AES-256</div><div class="lbl">Encryption</div></div>
+        <div class="stat"><div class="num">3</div><div class="lbl">Media Types</div></div>
+        <div class="stat"><div class="num">LSB</div><div class="lbl">Algorithm</div></div>
+        <div class="stat"><div class="num">100%</div><div class="lbl">Web Based</div></div>
+    </div>
+
+    <div class="scroll-cta">
+        <span>Choose a media type above to begin</span>
+        <i class="fas fa-chevron-down"></i>
+    </div>
+</div>
+
+<script>
+    // Theme
+    function toggleTheme() {
+        const html = document.documentElement;
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        document.getElementById('themeIcon').className = next === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    document.getElementById('themeIcon').className = saved === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+
+    // Particle canvas
+    (function () {
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let W, H, dots = [];
+        function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+        resize(); window.addEventListener('resize', resize);
+        for (let i = 0; i < 60; i++) dots.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.5+0.5, vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3 });
+        function draw() {
+            ctx.clearRect(0,0,W,H);
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const col = isDark ? '99,102,241' : '99,102,241';
+            dots.forEach(d => {
+                d.x += d.vx; d.y += d.vy;
+                if (d.x<0||d.x>W) d.vx*=-1;
+                if (d.y<0||d.y>H) d.vy*=-1;
+                ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+                ctx.fillStyle = `rgba(${col},${isDark?0.5:0.25})`; ctx.fill();
+            });
+            dots.forEach((a,i) => dots.slice(i+1).forEach(b => {
+                const dist = Math.hypot(a.x-b.x,a.y-b.y);
+                if (dist<120) { ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.strokeStyle=`rgba(${col},${(1-dist/120)*(isDark?0.15:0.08)})`; ctx.stroke(); }
+            }));
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-title">
+        <i class="fas fa-video" style="color:var(--orange)"></i>
+        Decode Video
+        <span class="badge badge-green"><i class="fas fa-unlock"></i> Decrypt</span>
+    </div>
+    <p class="card-subtitle">Upload your encoded AVI video and enter the secret key to reveal the hidden message.</p>
+
+    {% if error %}
+    <div class="alert alert-error"><i class="fas fa-circle-exclamation"></i> {{ error }}</div>
+    {% endif %}
+
+    {% if message %}
+    <div class="alert alert-success"><i class="fas fa-check-circle"></i> Message decoded successfully!</div>
+    <div class="form-group">
+        <label class="form-label"><i class="fas fa-eye"></i> Decoded Message</label>
+        <div class="result-box">
+            <pre id="decodedMsg">{{ message }}</pre>
+            <button class="copy-btn" onclick="copyToClipboard('decodedMsg')"><i class="fas fa-copy"></i> Copy</button>
+        </div>
+    </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="form-label"><i class="fas fa-film"></i> Encoded Video File</label>
+            <div class="drop-zone" id="dropZone">
+                <i class="fas fa-clapperboard" style="color:var(--orange)"></i>
+                <p><span onclick="document.getElementById('encoded_video_file').click()">Click to browse</span> or drag &amp; drop</p>
+                <p style="font-size:0.78rem;margin-top:5px;">Supported: AVI (encoded video from ZIP)</p>
+                <div class="file-name" id="fileName"></div>
+                <div class="file-info" id="fileInfo"></div>
+                <input type="file" name="encoded_video_file" id="encoded_video_file" accept=".avi">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label"><i class="fas fa-key"></i> Secret Key</label>
+            <input type="text" class="form-control" name="key" placeholder="Enter the 5-digit key from your key file..." required>
+            <div style="font-size:0.78rem;color:var(--text2);margin-top:5px;">The key is inside the ZIP file you downloaded during encoding.</div>
+        </div>
+
+        <button type="submit" class="btn btn-green"><i class="fas fa-unlock"></i> Decode Message</button>
+    </form>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>initDropZone('dropZone','encoded_video_file',['avi'],null);</script>
+{% endblock %}

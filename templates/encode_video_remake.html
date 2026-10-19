@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-title">
+        <i class="fas fa-video" style="color:var(--orange)"></i>
+        Encode Video
+        <span class="badge badge-purple"><i class="fas fa-shield-halved"></i> AES-256</span>
+    </div>
+    <p class="card-subtitle">Hide a secret message inside an AVI video file using LSB steganography with AES-256 encryption.</p>
+
+    {% if error %}
+    <div class="alert alert-error"><i class="fas fa-circle-exclamation"></i> {{ error }}</div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="form-label"><i class="fas fa-message"></i> Secret Message</label>
+            <textarea class="form-control" name="message" placeholder="Enter your secret message here..." required oninput="this.parentElement.querySelector('.char-count').textContent=this.value.length+' characters'"></textarea>
+            <div style="font-size:0.78rem;color:var(--text2);margin-top:5px;display:flex;justify-content:space-between;">
+                <span>Your message will be AES-256 encrypted before embedding.</span>
+                <span class="char-count">0 characters</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label"><i class="fas fa-film"></i> Cover Video File</label>
+            <div class="drop-zone" id="dropZone">
+                <i class="fas fa-clapperboard" style="color:var(--orange)"></i>
+                <p><span onclick="document.getElementById('video_file').click()">Click to browse</span> or drag &amp; drop</p>
+                <p style="font-size:0.78rem;margin-top:5px;">Supported: AVI only</p>
+                <div class="file-name" id="fileName"></div>
+                <div class="file-info" id="fileInfo"></div>
+                <input type="file" name="video_file" id="video_file" accept=".avi">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary"><i class="fas fa-lock"></i> Encode & Download</button>
+    </form>
+</div>
+
+<div class="card" style="background:var(--bg3);border-style:dashed;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <i class="fas fa-circle-info" style="color:var(--orange)"></i>
+        <strong>How it works</strong>
+    </div>
+    <p style="font-size:0.85rem;color:var(--text2);line-height:1.7;">
+        1. Your message is <strong style="color:var(--green)">AES-256 encrypted</strong> with a randomly generated key.<br>
+        2. The encrypted data is embedded in the <strong style="color:var(--accent)">least significant bits of video bytes</strong>.<br>
+        3. You receive a <strong style="color:var(--orange)">ZIP file</strong> containing the encoded video + your secret key file.
+    </p>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>initDropZone('dropZone','video_file',['avi'],null);</script>
+{% endblock %}

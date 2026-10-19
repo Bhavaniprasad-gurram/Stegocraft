@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.pyc
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Environment
+.env
+.env.local
+.env.*.local
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Build/Dist
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Temp / encoded output
+*.zip
+*.rar
+encoded_*/
+temp_*/
+
+# Sample media (large binary files)
+audio.wav
+sample1.avi
+sample2.avi
